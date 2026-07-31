@@ -1,0 +1,12 @@
+vlan 101
+ name Control-Data
+interface range GigabitEthernet0/1 , GigabitEthernet1/1
+ switchport mode access
+ switchport access vlan 101
+ no shutdown
+ip access-list standard MGT_LAB306_ONLY
+ permit {{ mgt_net }}
+ permit {{ lab306_net }}
+line vty 0 4
+ access-class MGT_LAB306_ONLY in
+ transport input ssh telnet

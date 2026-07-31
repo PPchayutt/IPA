@@ -1,0 +1,12 @@
+interface GigabitEthernet0/2
+ ip vrf forwarding control-data
+ ip address 10.1.2.1 255.255.255.0
+ no shutdown
+router ospf 1 vrf control-data
+ network {{ ospf_net }} area 0
+ip access-list standard MGT_LAB306_ONLY
+ permit {{ mgt_net }}
+ permit {{ lab306_net }}
+line vty 0 4
+ access-class MGT_LAB306_ONLY in
+ transport input ssh telnet

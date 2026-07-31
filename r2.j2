@@ -1,0 +1,27 @@
+interface GigabitEthernet0/1
+ ip vrf forwarding control-data
+ ip address 10.1.2.2 255.255.255.0
+ no shutdown
+interface GigabitEthernet0/2
+ ip vrf forwarding control-data
+ ip address 10.1.3.1 255.255.255.0
+ no shutdown
+interface GigabitEthernet0/3
+ ip vrf forwarding control-data
+ ip address dhcp
+ ip nat outside
+ no shutdown
+router ospf 1 vrf control-data
+ network {{ ospf_net }} area 0
+ default-information originate
+ip access-list standard NAT_ACL
+ permit {{ ospf_net }}
+ip nat inside source list NAT_ACL interface GigabitEthernet0/3 vrf control-data overload
+interface range GigabitEthernet0/1 - 2
+ ip nat inside
+ip access-list standard MGT_LAB306_ONLY
+ permit {{ mgt_net }}
+ permit {{ lab306_net }}
+line vty 0 4
+ access-class MGT_LAB306_ONLY in
+ transport input ssh telnet
